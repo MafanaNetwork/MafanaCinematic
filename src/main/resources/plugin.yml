@@ -2,3 +2,6 @@ name: MafanaCinematic
 version: '${project.version}'
 main: me.tahacheji.mafana.MafanaCinematic
 api-version: 1.20
+
+commands:
+  MC:
