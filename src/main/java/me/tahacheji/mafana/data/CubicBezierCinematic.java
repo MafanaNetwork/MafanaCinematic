@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class CubicBezierCinematic {
+public class CubicBezierCinematic implements CinematicEvents {
 
     private Location point1;
     private Location point2;
@@ -25,6 +25,7 @@ public class CubicBezierCinematic {
     public void send(Player target, GameMode gameMode, Location endLocation) {
         target.setGameMode(GameMode.SPECTATOR);
         target.setFlying(true);
+        startOfCinematicView(target);
         new BukkitRunnable() {
             private int ticksElapsed = 0;
             private int totalTicks = lengthSpeed * 20;
@@ -37,10 +38,11 @@ public class CubicBezierCinematic {
                 Location intermediateLocation = cubicBezierInterpolation(point1, controlPoint1, controlPoint2, point2, t);
 
                 target.teleport(intermediateLocation);
-
+                whileInCinematicView(target);
                 if (ticksElapsed >= totalTicks) {
                     target.setGameMode(gameMode);
                     target.setFlying(false);
+                    endOfCinematicView(target);
                     if(endLocation != null){
                         target.teleport(endLocation);
                     }

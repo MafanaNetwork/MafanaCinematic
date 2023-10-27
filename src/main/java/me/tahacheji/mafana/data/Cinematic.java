@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class Cinematic {
+public class Cinematic implements CinematicEvents {
 
     private Location point1;
     private Location point2;
@@ -21,6 +21,7 @@ public class Cinematic {
     public void send(Player target, GameMode gameMode, Location endLocation) {
         target.setGameMode(GameMode.SPECTATOR);
         target.setFlying(true);
+        startOfCinematicView(target);
         new BukkitRunnable() {
             private int ticksElapsed = 0;
             private int totalTicks = lengthSpeed * 20;
@@ -31,12 +32,13 @@ public class Cinematic {
 
                 double progress = (double) ticksElapsed / totalTicks;
                 Location intermediateLocation = interpolateLocation(point1, point2, progress);
-
+                whileInCinematicView(target);
                 target.teleport(intermediateLocation);
 
                 if (ticksElapsed >= totalTicks) {
                     target.setGameMode(gameMode);
                     target.setFlying(false);
+                    endOfCinematicView(target);
                     if(endLocation != null) {
                         target.teleport(endLocation);
                     }
@@ -54,9 +56,6 @@ public class Cinematic {
         float pitch = (float) (loc1.getPitch() + (loc2.getPitch() - loc1.getPitch()) * progress);
         return new Location(loc1.getWorld(), x, y, z, yaw, pitch);
     }
-
-
-
 
 
     public int getLengthSpeed() {
