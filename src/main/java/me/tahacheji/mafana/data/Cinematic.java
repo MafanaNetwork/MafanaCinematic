@@ -17,29 +17,26 @@ public class Cinematic implements CinematicEvents {
     private Player target;
     private GameMode gameMode;
     private Location endLocation;
-    private List<Cinematic> cinematicList;
     private int position;
 
     public Cinematic(Location point1, Location point2, int lengthSpeed) {
         this.point1 = point1;
         this.point2 = point2;
         this.lengthSpeed = lengthSpeed;
-        this.cinematicList = new ArrayList<>();
         this.position = 0;
     }
 
-    public Cinematic(Location point1, Location point2, int lengthSpeed, Player target, GameMode gameMode, Location endLocation, List<Cinematic> cinematicList, int position) {
+    public Cinematic(Location point1, Location point2, int lengthSpeed, Player target, GameMode gameMode, Location endLocation, int position) {
         this.point1 = point1;
         this.point2 = point2;
         this.lengthSpeed = lengthSpeed;
         this.target = target;
         this.gameMode = gameMode;
         this.endLocation = endLocation;
-        this.cinematicList = cinematicList;
         this.position = position;
     }
 
-    public void send() {
+    public void send(List<Cinematic> cinematicList) {
         if (position < cinematicList.size()) {
             target.setGameMode(GameMode.SPECTATOR);
             target.setFlying(true);
@@ -66,7 +63,7 @@ public class Cinematic implements CinematicEvents {
                         }
                         position++;
                         if (position < cinematicList.size()) {
-                            cinematicList.get(position).send();
+                            cinematicList.get(position).send(cinematicList);
                         }
                         cancel();
                     }
@@ -84,9 +81,6 @@ public class Cinematic implements CinematicEvents {
         return new Location(loc1.getWorld(), x, y, z, yaw, pitch);
     }
 
-    public List<Cinematic> getCinematicList() {
-        return cinematicList;
-    }
 
     public GameMode getGameMode() {
         return gameMode;
@@ -122,10 +116,6 @@ public class Cinematic implements CinematicEvents {
 
     public void setEndLocation(Location endLocation) {
         this.endLocation = endLocation;
-    }
-
-    public void setCinematicList(List<Cinematic> cinematicList) {
-        this.cinematicList = cinematicList;
     }
 
     public void setPosition(int position) {
