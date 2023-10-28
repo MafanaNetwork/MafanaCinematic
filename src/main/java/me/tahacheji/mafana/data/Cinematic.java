@@ -6,74 +6,73 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Cinematic implements CinematicEvents {
 
     private Location point1;
     private Location point2;
     private int lengthSpeed;
-
     private Player target;
     private GameMode gameMode;
     private Location endLocation;
-
-    private Cinematic cinematic;
+    private List<Cinematic> cinematicList;
+    private int position;
 
     public Cinematic(Location point1, Location point2, int lengthSpeed) {
         this.point1 = point1;
         this.point2 = point2;
         this.lengthSpeed = lengthSpeed;
+        this.cinematicList = new ArrayList<>();
+        this.position = 0;
     }
 
-    public Cinematic(Location point1, Location point2, int lengthSpeed, Player target, GameMode gameMode, Location endLocation) {
+    public Cinematic(Location point1, Location point2, int lengthSpeed, Player target, GameMode gameMode, Location endLocation, List<Cinematic> cinematicList, int position) {
         this.point1 = point1;
         this.point2 = point2;
         this.lengthSpeed = lengthSpeed;
         this.target = target;
         this.gameMode = gameMode;
         this.endLocation = endLocation;
-    }
-
-    public Cinematic(Location point1, Location point2, int lengthSpeed, Player target, GameMode gameMode, Location endLocation, Cinematic cinematic) {
-        this.point1 = point1;
-        this.point2 = point2;
-        this.lengthSpeed = lengthSpeed;
-        this.target = target;
-        this.gameMode = gameMode;
-        this.endLocation = endLocation;
-        this.cinematic = cinematic;
+        this.cinematicList = cinematicList;
+        this.position = position;
     }
 
     public void send() {
-        target.setGameMode(GameMode.SPECTATOR);
-        target.setFlying(true);
-        startOfCinematicView(target);
-        new BukkitRunnable() {
-            private int ticksElapsed = 0;
-            private int totalTicks = lengthSpeed * 20;
+        if (position < cinematicList.size()) {
+            target.setGameMode(GameMode.SPECTATOR);
+            target.setFlying(true);
+            startOfCinematicView(target);
+            new BukkitRunnable() {
+                private int ticksElapsed = 0;
+                private int totalTicks = lengthSpeed * 20;
 
-            @Override
-            public void run() {
-                ticksElapsed++;
+                @Override
+                public void run() {
+                    ticksElapsed++;
 
-                double progress = (double) ticksElapsed / totalTicks;
-                Location intermediateLocation = interpolateLocation(point1, point2, progress);
-                whileInCinematicView(target);
-                target.teleport(intermediateLocation);
+                    double progress = (double) ticksElapsed / totalTicks;
+                    Location intermediateLocation = interpolateLocation(point1, point2, progress);
+                    whileInCinematicView(target);
+                    target.teleport(intermediateLocation);
 
-                if (ticksElapsed >= totalTicks) {
-                    target.setGameMode(gameMode);
-                    target.setFlying(false);
-                    endOfCinematicView(target);
-                    if(endLocation != null) {
-                        target.teleport(endLocation);
+                    if (ticksElapsed >= totalTicks) {
+                        target.setGameMode(gameMode);
+                        target.setFlying(false);
+                        endOfCinematicView(target);
+                        if (endLocation != null) {
+                            target.teleport(endLocation);
+                        }
+                        position++;
+                        if (position < cinematicList.size()) {
+                            cinematicList.get(position).send();
+                        }
+                        cancel();
                     }
-                    if(cinematic != null) {
-                        cinematic.send();
-                    }
-                    cancel();
                 }
-            }
-        }.runTaskTimer(MafanaCinematic.getInstance(), 0L, 1L);
+            }.runTaskTimer(MafanaCinematic.getInstance(), 0L, 1L);
+        }
     }
 
     private Location interpolateLocation(Location loc1, Location loc2, double progress) {
@@ -85,8 +84,8 @@ public class Cinematic implements CinematicEvents {
         return new Location(loc1.getWorld(), x, y, z, yaw, pitch);
     }
 
-    public Cinematic getCinematic() {
-        return cinematic;
+    public List<Cinematic> getCinematicList() {
+        return cinematicList;
     }
 
     public GameMode getGameMode() {
@@ -125,8 +124,12 @@ public class Cinematic implements CinematicEvents {
         this.endLocation = endLocation;
     }
 
-    public void setCinematic(Cinematic cinematic) {
-        this.cinematic = cinematic;
+    public void setCinematicList(List<Cinematic> cinematicList) {
+        this.cinematicList = cinematicList;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     public int getLengthSpeed() {
