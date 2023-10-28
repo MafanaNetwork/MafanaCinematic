@@ -12,13 +12,38 @@ public class Cinematic implements CinematicEvents {
     private Location point2;
     private int lengthSpeed;
 
+    private Player target;
+    private GameMode gameMode;
+    private Location endLocation;
+
+    private Cinematic cinematic;
+
     public Cinematic(Location point1, Location point2, int lengthSpeed) {
         this.point1 = point1;
         this.point2 = point2;
         this.lengthSpeed = lengthSpeed;
     }
 
-    public void send(Player target, GameMode gameMode, Location endLocation) {
+    public Cinematic(Location point1, Location point2, int lengthSpeed, Player target, GameMode gameMode, Location endLocation) {
+        this.point1 = point1;
+        this.point2 = point2;
+        this.lengthSpeed = lengthSpeed;
+        this.target = target;
+        this.gameMode = gameMode;
+        this.endLocation = endLocation;
+    }
+
+    public Cinematic(Location point1, Location point2, int lengthSpeed, Player target, GameMode gameMode, Location endLocation, Cinematic cinematic) {
+        this.point1 = point1;
+        this.point2 = point2;
+        this.lengthSpeed = lengthSpeed;
+        this.target = target;
+        this.gameMode = gameMode;
+        this.endLocation = endLocation;
+        this.cinematic = cinematic;
+    }
+
+    public void send() {
         target.setGameMode(GameMode.SPECTATOR);
         target.setFlying(true);
         startOfCinematicView(target);
@@ -42,6 +67,9 @@ public class Cinematic implements CinematicEvents {
                     if(endLocation != null) {
                         target.teleport(endLocation);
                     }
+                    if(cinematic != null) {
+                        cinematic.send();
+                    }
                     cancel();
                 }
             }
@@ -57,6 +85,49 @@ public class Cinematic implements CinematicEvents {
         return new Location(loc1.getWorld(), x, y, z, yaw, pitch);
     }
 
+    public Cinematic getCinematic() {
+        return cinematic;
+    }
+
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
+    public Location getEndLocation() {
+        return endLocation;
+    }
+
+    public Player getTarget() {
+        return target;
+    }
+
+    public void setPoint1(Location point1) {
+        this.point1 = point1;
+    }
+
+    public void setPoint2(Location point2) {
+        this.point2 = point2;
+    }
+
+    public void setLengthSpeed(int lengthSpeed) {
+        this.lengthSpeed = lengthSpeed;
+    }
+
+    public void setTarget(Player target) {
+        this.target = target;
+    }
+
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
+    }
+
+    public void setEndLocation(Location endLocation) {
+        this.endLocation = endLocation;
+    }
+
+    public void setCinematic(Cinematic cinematic) {
+        this.cinematic = cinematic;
+    }
 
     public int getLengthSpeed() {
         return lengthSpeed;

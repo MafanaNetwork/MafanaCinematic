@@ -20,11 +20,8 @@ public class PlayerBreakBlock implements Listener {
         Location playerLocation = player.getLocation();
         if(playerDirector != null) {
             event.setCancelled(true);
-            String message = String.format(
-                    "%d, %d, %d, %.2f, %.2f",
-                    blockLocation.getBlockX(), blockLocation.getBlockY(), blockLocation.getBlockZ(),
-                    playerLocation.getYaw(), playerLocation.getPitch()
-            );
+            String message = "new Location(Bukkit.getWorld(\"world\"), " + blockLocation.getX() + ", " + blockLocation.getY() + ", " +
+                    blockLocation.getZ() + ", (float) " + playerLocation.getYaw() + ", (float) " + playerLocation.getPitch() + ");";
             Component chatMessage = Component.text(message)
                     .clickEvent(ClickEvent.copyToClipboard(message))
                     .color(net.kyori.adventure.text.format.NamedTextColor.GREEN);

@@ -33,11 +33,8 @@ public class DirectorCommand implements CommandExecutor {
             if (args[0].equalsIgnoreCase("pos")) {
                 Location blockLocation = player.getLocation();
                 Location playerLocation = player.getLocation();
-                String message = String.format(
-                        "%d, %d, %d, %.2f, %.2f",
-                        blockLocation.getBlockX(), blockLocation.getBlockY(), blockLocation.getBlockZ(),
-                        playerLocation.getYaw(), playerLocation.getPitch()
-                );
+                String message = "new Location(Bukkit.getWorld(\"world\"), " + blockLocation.getX() + ", " + blockLocation.getY() + ", " +
+                        blockLocation.getZ() + ", (float) " + playerLocation.getYaw() + ", (float) " + playerLocation.getPitch() + ");";
                 Component chatMessage = Component.text(message)
                         .clickEvent(ClickEvent.copyToClipboard(message))
                         .color(net.kyori.adventure.text.format.NamedTextColor.GREEN);
@@ -49,7 +46,7 @@ public class DirectorCommand implements CommandExecutor {
                 Location point2 = new Location(Bukkit.getWorld("world"), 2400, 166, 3057, (float) 0.16, (float) 1.70);
                 Cinematic cinematic = new Cinematic(point1, point2, 15);
 
-                cinematic.send(player, GameMode.SURVIVAL, null);
+                //cinematic.send(player, GameMode.SURVIVAL, null);
                 return true;
             }
         }
