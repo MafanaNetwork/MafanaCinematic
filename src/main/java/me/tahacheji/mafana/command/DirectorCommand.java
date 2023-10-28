@@ -14,6 +14,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DirectorCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -42,11 +45,20 @@ public class DirectorCommand implements CommandExecutor {
                 return true;
             }
             if (args[0].equalsIgnoreCase("send")) {
-                Location point1 = new Location(Bukkit.getWorld("world"), 2387, 165, 3049, (float) -90.82, (float) -0.92);
-                Location point2 = new Location(Bukkit.getWorld("world"), 2400, 166, 3057, (float) 0.16, (float) 1.70);
-                Cinematic cinematic = new Cinematic(point1, point2, 15);
+                List<Cinematic> cinematicSequence = new ArrayList<>();
+                cinematicSequence.add(new Cinematic(new Location(Bukkit.getWorld("world"), 2360, 35, 3159, (float) 0.14, (float) -2.90),
+                        new Location(Bukkit.getWorld("world"), 2360, 64, 3159, (float) 32.27, (float) 29.41), 5, player, GameMode.SPECTATOR, null, 0)); // Changed to 0
+                cinematicSequence.add(new Cinematic(new Location(Bukkit.getWorld("world"), 2384, 42, 3205, (float) 17.89, (float) -2.69),
+                        new Location(Bukkit.getWorld("world"), 2384, 42, 3205, (float) 17.89, (float) -2.69), 3, player, GameMode.SPECTATOR, null, 1)); // Changed to 1
+                cinematicSequence.add(new Cinematic(new Location(Bukkit.getWorld("world"), 2324, 27, 3198, (float) -141.58, (float) 18.88),
+                        new Location(Bukkit.getWorld("world"), 2324, 27, 3198, (float) -141.58, (float) 18.88), 3, player, GameMode.SPECTATOR, null, 2)); // Changed to 2
+                cinematicSequence.add(new Cinematic(new Location(Bukkit.getWorld("world"), 2316, 22, 3171, (float) 39.23, (float) 8.67),
+                        new Location(Bukkit.getWorld("world"), 2316, 22, 3171, (float) 39.23, (float) 8.67), 3, player, GameMode.SPECTATOR, null, 3)); // Changed to 3
+                cinematicSequence.add(new Cinematic(new Location(Bukkit.getWorld("world"), 2270, 25, 3162, (float) 16.54, (float) 18.65),
+                        new Location(Bukkit.getWorld("world"), 2265, 19, 3177, (float) 23.53, (float) 2.41), 4, player, GameMode.SURVIVAL,
+                        new Location(Bukkit.getWorld("world"), 2265, 19, 3177, (float) 28.86, (float) 2.80), 4)); // Changed to 4
 
-                //cinematic.send(player, GameMode.SURVIVAL, null);
+                cinematicSequence.get(0).send(cinematicSequence);
                 return true;
             }
         }

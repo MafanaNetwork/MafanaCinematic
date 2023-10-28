@@ -61,16 +61,19 @@ public class Cinematic implements CinematicEvents {
                         if (endLocation != null) {
                             target.teleport(endLocation);
                         }
+                        cancel();
+
+                        // Increment the position and send the next cinematic
                         position++;
                         if (position < cinematicList.size()) {
                             cinematicList.get(position).send(cinematicList);
                         }
-                        cancel();
                     }
                 }
             }.runTaskTimer(MafanaCinematic.getInstance(), 0L, 1L);
         }
     }
+
 
     private Location interpolateLocation(Location loc1, Location loc2, double progress) {
         double x = loc1.getX() + (loc2.getX() - loc1.getX()) * progress;
